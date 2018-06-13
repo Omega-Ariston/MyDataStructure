@@ -1,8 +1,11 @@
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 public class MyLinkedList<T> implements List<T>{
 
     private int size;
-    private Node<T> head;
-    private Node<T> tail;
+    public Node<T> head;
+    public Node<T> tail;
 
     public MyLinkedList(){
         this.size = 0;
@@ -10,7 +13,28 @@ public class MyLinkedList<T> implements List<T>{
         this.tail = null;
     }
 
-    private class Node<T>{
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            Node<T> node = head;
+            @Override
+            public boolean hasNext() {
+                return node!=null;
+            }
+
+            @Override
+            public T next() {
+                if(this.hasNext()){
+                    T output = node.val;
+                    node = node.next;
+                    return output;
+                }
+                throw new NoSuchElementException();
+            }
+        };
+    }
+
+    class Node<T>{
         T val;
         Node<T> next;
         Node<T> last;
@@ -51,9 +75,40 @@ public class MyLinkedList<T> implements List<T>{
         return output.val;
     }
 
+    public boolean remove(T val){
+        Node<T> node = get(val);
+        if(node==null)
+            return false;
+        if(node.last==null && node.next==null){
+            head = null;
+            tail = null;
+        } else if(node.last==null){
+            head = node.next;
+            head.last = null;
+        } else if(node.next==null){
+            tail = node.last;
+            tail.next = null;
+        } else{
+            node.last.next = node.next;
+            node.next.last = node.last;
+        }
+        size--;
+        return true;
+    }
+
     @Override
     public T get(int index) {
         return find(index).val;
+    }
+
+    public Node<T> get(T val){
+        Node<T> node = head;
+        while(node!=null){
+            if(node.val.equals(val))
+                return node;
+            node = node.next;
+        }
+        return null;
     }
 
     private Node<T> find(int index){

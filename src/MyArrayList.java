@@ -1,3 +1,6 @@
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+
 public class MyArrayList<T> implements List<T> {
 
     private final int INITIAL_SIZE = 16;
@@ -65,5 +68,23 @@ public class MyArrayList<T> implements List<T> {
             left++;
             right--;
         }
+    }
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+            int index = 0;
+            @Override
+            public boolean hasNext() {
+                return index<size;
+            }
+
+            @Override
+            public T next() {
+                if(this.hasNext())
+                    return stock[index++];
+                throw new NoSuchElementException();
+            }
+        };
     }
 }
